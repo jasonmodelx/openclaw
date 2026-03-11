@@ -11,11 +11,12 @@
       "enabled": true
     }
   ],
-  "notebooklm_bin": "~/.openclaw/workspace-news/.venvs/notebooklm/bin/notebooklm",
-  "_output_dir_openclaw": "/root/.openclaw/workspace/notebooklm-library/podcast",
+  "_notebooklm_bin": "~/.openclaw/workspace-news/.venvs/notebooklm/bin/notebooklm",
+  "notebooklm_bin": "/root/.openclaw/workspace/notebooklm-library/podcast",
   "output_dir": "/Users/chenjian/Downloads/podcast/output",
   "artifacts": [
-    "report", "mind_map"
+    "report",
+    "mind_map"
   ],
   "language": "zh_Hans",
   "check_interval_minutes": 120,
