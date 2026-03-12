@@ -1,0 +1,44 @@
+{
+  "channels": [
+    {
+      "name": "Coin Bureau",
+      "url": "https://www.youtube.com/@CoinBureau",
+      "enabled": true,
+      "channel_id": "UCqK_GSMbpiV8spgD3ZGloSw"
+    }
+  ],
+  "podcasts": [
+    {
+      "name": "Lex Fridman Podcast",
+      "url": "https://lexfridman.com/feed/podcast/",
+      "enabled": true
+    }
+  ],
+  "artifacts": [
+    "report",
+    "mind-map",
+    "slide-deck"
+  ],
+  "email": {
+    "enabled": false,
+    "to": "your@email.com",
+    "smtp_host": "smtp.example.com",
+    "smtp_port": 587,
+    "smtp_user": "your@email.com",
+    "smtp_pass": "your-smtp-password"
+  },
+  "check_interval_hours": 4,
+  "language": "zh_Hans",
+  "last_check_file": "scripts/last_check.json",
+  "keywords": [
+    "AI",
+    "BTC"
+  ],
+  "youtube_api_key": "your-youtube-api-key",
+  "keyword_search": {
+    "enabled": true,
+    "top_n": 5,
+    "time_range_hours": 24,
+    "sort_by": "viewCount"
+  }
+}

@@ -1,0 +1,8 @@
+scripts/__pycache__/
+scripts/config.json
+scripts/*.bak
+scripts/latest_results.json
+scripts/last_check.json
+scripts/keyword_results.json
+scripts/*.pyc
+scripts/*.md
