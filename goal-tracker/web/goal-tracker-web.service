@@ -1,0 +1,15 @@
+[Unit]
+Description=Goal Tracker Web Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/.openclaw/workspace-life/skills/goal-tracker/web
+ExecStart=/usr/bin/python3 /root/.openclaw/workspace-life/skills/goal-tracker/web/app.py
+Restart=always
+RestartSec=10
+Environment="PORT=8080"
+
+[Install]
+WantedBy=multi-user.target
