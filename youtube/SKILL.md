@@ -3,7 +3,8 @@ name: youtube-notebooklm
 description: |
   YouTube 频道监控 + NotebookLM 自动化制品生成。
   支持定期检查频道、分析单个 YouTube 链接、按需指定 artifact 类型、
-  控制每个频道抓取的最新视频数量，并在下载完成后自动删除 notebook。
+  控制每个频道抓取的最新视频数量，也支持按关键词搜索 YouTube 视频并分析，
+  并在下载完成后自动删除 notebook。
   当用户提到 YouTube 监控、NotebookLM 自动生成、频道订阅检查时激活。
 ---
 
@@ -11,7 +12,7 @@ description: |
 
 ## 概述
 
-监控指定 YouTube 频道的新视频，或直接分析单个 YouTube 链接。脚本会把视频 URL 传入 NotebookLM，生成指定制品并下载到本地；默认下载完成后自动删除临时 notebook。
+监控指定 YouTube 频道的新视频，或直接分析单个 YouTube 链接。也支持按关键词搜索 YouTube 视频并交给 NotebookLM 分析。默认下载完成后自动删除临时 notebook。
 
 ## 前置依赖
 
@@ -85,7 +86,28 @@ python3 scripts/check_channels.py \
 - 下载完成后默认删除 notebook
 - 需要保留 notebook 时显式传 `--keep-notebook`
 
-### 3. 邮件通知
+### 3. 关键词搜索
+
+支持按关键词搜索 YouTube 视频，并将搜索结果交给 NotebookLM 生成报告。
+
+入口脚本：
+
+```bash
+python3 scripts/keyword_search.py
+```
+
+配置来源：
+- `scripts/config.json` 中的 `keywords`
+- `scripts/config.json` 中的 `keyword_search`
+- `scripts/config.json` 中的 `youtube_api_key`
+
+行为说明：
+- 搜索的是 YouTube 视频，不是直接搜索字幕文本
+- 搜索结果会进入 NotebookLM 分析流程
+- 当前实现重点是“关键词找视频并分析”，不是“按关键词批量抓取字幕文件”
+- 如果用户明确要“关键词搜索 + 批量获取字幕”，那是另一项能力，不能说当前 skill 已完整支持
+
+### 4. 邮件通知
 
 生成完成后，自动调用 `scripts/notify.py` 发送邮件摘要：
 - 新视频标题和链接
@@ -135,6 +157,19 @@ sessions_spawn(
 用户说："分析 Coin Bureau 最新 5 条视频"
 → 运行 `python3 scripts/check_channels.py --channel "Coin Bureau" --limit 5`
 
+### 关键词搜索分析
+用户说："按关键词搜索 YouTube 视频并分析"
+→ 优先运行 `python3 scripts/keyword_search.py`
+
+### 关于关键词搜索的边界
+不要错误回复：
+- “当前只支持视频 URL，不支持关键词搜索”
+
+应该回复：
+- 当前 skill 已支持关键词搜索 YouTube 视频并分析
+- 但当前不是通用字幕抓取器
+- 如果用户要批量抓字幕，需要单独说明这是另一项功能
+
 ## 注意事项
 
 - NotebookLM 制品生成需要时间（每个 2-8 分钟），多种 artifacts 会并发生成
@@ -142,3 +177,4 @@ sessions_spawn(
 - `storage_state.json` 权限必须为 600
 - YouTube 频道 URL 支持 `@handle`、`/channel/ID`、`/c/name` 格式
 - 默认会在下载后删除 notebook；如需保留，使用 `--keep-notebook`
+- 关键词搜索依赖 `youtube_api_key`
