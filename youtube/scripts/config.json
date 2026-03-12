@@ -1,0 +1,124 @@
+{
+  "channels": [
+    {
+      "name": "Coin Bureau",
+      "url": "https://www.youtube.com/@CoinBureau",
+      "enabled": true,
+      "channel_id": "UCqK_GSMbpiV8spgD3ZGloSw"
+    },
+    {
+      "name": "Altcoin Daily",
+      "url": "https://www.youtube.com/@AltcoinDaily",
+      "enabled": true,
+      "channel_id": "UCbLhGKVY-bJPcawebgtNfbw"
+    },
+    {
+      "name": "Crypto Banter",
+      "url": "https://www.youtube.com/channel/UCN9Nj4tjXbVTLYWN0EKly_Q",
+      "enabled": true,
+      "channel_id": "UCN9Nj4tjXbVTLYWN0EKly_Q"
+    },
+    {
+      "name": "Whiteboard Crypto",
+      "url": "https://www.youtube.com/@WhiteboardCrypto",
+      "enabled": true,
+      "channel_id": "UCsYYksPHiGqXHPoHI-fm5sg"
+    },
+    {
+      "name": "Benjamin Cowen",
+      "url": "https://www.youtube.com/@intothecryptoverse",
+      "enabled": true,
+      "channel_id": "UCRvqjQPSeaWn-uEx-w0XOIg"
+    },
+    {
+      "name": "InvestAnswers",
+      "url": "https://www.youtube.com/@investanswers",
+      "enabled": true,
+      "channel_id": "UClgJyzwGs-GyaNxUHcLZrkg"
+    },
+    {
+      "name": "Finematics",
+      "url": "https://www.youtube.com/c/finematics",
+      "enabled": true,
+      "channel_id": "UCh1ob28ceGdqohUnR7vBACA"
+    },
+    {
+      "name": "Bankless",
+      "url": "https://www.youtube.com/@Bankless",
+      "enabled": true,
+      "channel_id": "UCAl9Ld79qaZxp9JzEOwd3aA"
+    },
+    {
+      "name": "CoinDesk",
+      "url": "https://www.youtube.com/@CoinDesk",
+      "enabled": true,
+      "channel_id": "UC7TghOL755nBk7HelHoi9LQ"
+    },
+    {
+      "name": "The Defiant",
+      "url": "https://www.youtube.com/TheDefiant",
+      "enabled": true,
+      "channel_id": "UCL0J4MLEdLP0-UyLu0hCktg"
+    },
+    {
+      "name": "Stripe",
+      "url": "https://www.youtube.com/@stripe",
+      "enabled": true,
+      "channel_id": "UCM1guA1E-RHLO2OyfQPOkEQ"
+    },
+    {
+      "name": "Brain Bro Crypto",
+      "url": "https://www.youtube.com/@brainbrocrypto",
+      "channel_id": "UC1EG67JfgUKaZ4Z_l4euycw",
+      "category": "DEFI"
+    }
+  ],
+  "podcasts": [
+    {
+      "name": "知行小酒馆",
+      "url": "https://feed.xyzfm.space/j8yp8gxkmgqr",
+      "enabled": true
+    },
+    {
+      "name": "The Joe Rogan Experience",
+      "url": "https://feeds.megaphone.fm/GLT1412515089",
+      "enabled": false
+    },
+    {
+      "name": "Lex Fridman Podcast",
+      "url": "https://lexfridman.com/feed/podcast/",
+      "enabled": true
+    }
+  ],
+  "notebooklm_bin": "~/.openclaw/workspace-news/.venvs/notebooklm/bin/notebooklm",
+  "artifacts": [
+    "report",
+    "mind-map",
+    "slide-deck"
+  ],
+  "email": {
+    "enabled": true,
+    "to": "3991664273@qq.com",
+    "smtp_host": "smtp.qq.com",
+    "smtp_port": 587,
+    "smtp_user": "3991664273@qq.com",
+    "smtp_pass": "hhwtekbomasgceeb"
+  },
+  "check_interval_hours": 4,
+  "language": "zh_Hans",
+  "last_check_file": "scripts/last_check.json",
+  "keywords": [
+    "openclaw",
+    "伊朗",
+    "DEFI",
+    "AI",
+    "BTC"
+  ],
+  "youtube_api_key": "AIzaSyC7XL9RJ9q5zy-yOdRvnLpbV_53Dyz9GDc",
+  "keyword_search": {
+    "enabled": true,
+    "top_n": 5,
+    "time_range_hours": 24,
+    "sort_by": "viewCount"
+  }
+}
