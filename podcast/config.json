@@ -1,0 +1,33 @@
+{
+  "podcasts": [
+    {
+      "name": "知行小酒馆",
+      "apple_id": "1559695855",
+      "enabled": true
+    },
+    {
+      "name": "Lex Fridman Podcast",
+      "apple_id": "1434243584",
+      "enabled": true
+    }
+  ],
+  "_notebooklm_bin": "~/.openclaw/workspace-news/.venvs/notebooklm/bin/notebooklm",
+  "notebooklm_bin": "/root/.openclaw/workspace/notebooklm-library/podcast",
+  "output_dir": "/Users/chenjian/Downloads/podcast/output",
+  "artifacts": [
+    "report",
+    "mind_map"
+  ],
+  "language": "zh_Hans",
+  "check_interval_minutes": 120,
+  "poll_interval_minutes": 2,
+  "email": {
+    "enabled": true,
+    "to": "3991664273@qq.com",
+    "smtp_host": "smtp.qq.com",
+    "smtp_port": 587,
+    "smtp_user": "3991664273@qq.com",
+    "smtp_pass": "hhwtekbomasgceeb"
+  },
+  "telegram_channel": "-5112539904"
+}
