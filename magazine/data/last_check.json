@@ -1,0 +1,30 @@
+{
+  "The Economist": {
+    "notebook_id": "273c5fd4-1a5f-4f4f-b8bf-f0561e7efe18",
+    "processed_issues": [
+      "te_2026.02.28",
+      "te_2026.03.07"
+    ]
+  },
+  "The New Yorker": {
+    "notebook_id": "483d58ae-68c5-49a3-92ff-b820661cfc14",
+    "processed_issues": [
+      "2026.03.02",
+      "2026.03.09"
+    ]
+  },
+  "The Atlantic": {
+    "notebook_id": "4925a851-ae0c-44fa-821b-1d7c29f3e2f9",
+    "processed_issues": [
+      "2026.02.02",
+      "2026.03.02"
+    ]
+  },
+  "Wired": {
+    "notebook_id": "6e9caee1-e5ab-48e8-975d-b49d28db7e0a",
+    "processed_issues": [
+      "2026.02.02",
+      "2026.03.02"
+    ]
+  }
+}

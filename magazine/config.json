@@ -1,0 +1,45 @@
+{
+  "repo": "hehonghui/awesome-english-ebooks",
+  "magazines": [
+    {
+      "name": "The Economist",
+      "path": "01_economist",
+      "prefix": "te_",
+      "pdf_pattern": "TheEconomist.*.pdf",
+      "enabled": true
+    },
+    {
+      "name": "The New Yorker",
+      "path": "02_new_yorker",
+      "prefix": "ny_",
+      "pdf_pattern": "TheNewYorker.*.pdf",
+      "enabled": true
+    },
+    {
+      "name": "The Atlantic",
+      "path": "04_atlantic",
+      "prefix": "erta_",
+      "pdf_pattern": "*.pdf",
+      "enabled": true
+    },
+    {
+      "name": "Wired",
+      "path": "05_wired",
+      "prefix": "wired_",
+      "pdf_pattern": "*.pdf",
+      "enabled": true
+    }
+  ],
+  "notebooklm_bin": "~/.openclaw/workspace-news/.venvs/notebooklm/bin/notebooklm",
+  "artifacts": [
+    "report"
+  ],
+  "email": {
+    "enabled": true,
+    "to": "your@email.com",
+    "smtp_host": "smtp.example.com",
+    "smtp_port": 587,
+    "smtp_user": "your@email.com",
+    "smtp_pass": "your-smtp-password"
+  }
+}
