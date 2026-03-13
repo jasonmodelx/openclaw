@@ -23,7 +23,9 @@ from notebooklm_async import (
     delete_notebook,
     generate_artifacts,
     get_or_create_notebook,
+    log_stage,
     resolve_artifact_types,
+    run_with_timeout,
     sanitize_path_component,
 )
 
@@ -401,12 +403,27 @@ def save_results(all_results: list[dict]) -> None:
 
 
 def send_notification_if_needed(all_results: list[dict]) -> None:
-    if not all_results:
+    completed_results = []
+    for result in all_results:
+        artifacts = result.get("artifacts", {})
+        statuses = list(artifacts.values())
+        if not statuses:
+            continue
+        if any(status == "pending" for status in statuses):
+            continue
+        if not any(status == "ok" for status in statuses):
+            continue
+        completed_results.append(result)
+
+    if not completed_results:
+        print("📭 没有可发送邮件的已完成结果")
         return
     notify_script = SCRIPT_DIR / "notify.py"
-    results_file = SCRIPT_DIR / "latest_results.json"
+    temp_file = SCRIPT_DIR / "latest_completed_results.json"
+    with open(temp_file, "w", encoding="utf-8") as f:
+        json.dump(completed_results, f, indent=2, ensure_ascii=False)
     subprocess.run(
-        [sys.executable, str(notify_script), str(results_file)],
+        [sys.executable, str(notify_script), str(temp_file)],
         timeout=180,
         check=False,
     )
@@ -420,7 +437,14 @@ async def main_async(args) -> str:
     artifact_types = get_artifact_types(config, args.artifacts)
     limit = max(args.limit, 1)
 
-    async with await NotebookLMClient.from_storage() as client:
+    proxy_snapshot = {
+        key: os.environ.get(key)
+        for key in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy")
+        if os.environ.get(key)
+    }
+    log_stage("env", f"proxy env: {proxy_snapshot or 'none'}")
+    client = await run_with_timeout("client", "NotebookLMClient.from_storage", NotebookLMClient.from_storage(), 60)
+    async with client:
         if args.url:
             results = await process_direct_url(
                 client,

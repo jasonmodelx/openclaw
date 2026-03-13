@@ -135,6 +135,14 @@ def attach_file(msg: MIMEMultipart, path: Path, filename: str, mime_type: tuple[
 
 
 def send_email(results):
+    results = [
+        result
+        for result in results
+        if result.get("artifacts")
+        and not any(status == "pending" for status in result["artifacts"].values())
+        and any(status == "ok" for status in result["artifacts"].values())
+    ]
+
     config = load_config()
     email_cfg = config.get("email", {})
 

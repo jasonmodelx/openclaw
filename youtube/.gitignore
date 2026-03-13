@@ -1,6 +1,7 @@
 scripts/__pycache__/
 scripts/*.bak
 scripts/latest_results.json
+scripts/latest_completed_results.json
 scripts/last_check.json
 scripts/keyword_results.json
 scripts/*.pyc

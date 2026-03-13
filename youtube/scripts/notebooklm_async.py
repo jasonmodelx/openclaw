@@ -4,13 +4,41 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import re
+import time
 from pathlib import Path
 
 from notebooklm import NotebookLMClient
 
 DEFAULT_OUTPUT_ROOT = Path("/root/.openclaw/workspace/notebooklm-library/notebooklm")
 NOTEBOOK_URL = "https://notebooklm.google.com/notebook/{id}"
+RPC_TIMEOUT = float(os.environ.get("NOTEBOOKLM_RPC_TIMEOUT", "90"))
+SOURCE_READY_TIMEOUT = float(os.environ.get("NOTEBOOKLM_SOURCE_TIMEOUT", "180"))
+DELETE_TIMEOUT = float(os.environ.get("NOTEBOOKLM_DELETE_TIMEOUT", "60"))
+
+
+def log_stage(stage: str, detail: str) -> None:
+    print(f"    [{stage}] {detail}")
+
+
+async def run_with_timeout(stage: str, detail: str, coro, timeout: float):
+    started = time.monotonic()
+    log_stage(stage, f"start: {detail} (timeout={int(timeout)}s)")
+    try:
+        result = await asyncio.wait_for(coro, timeout=timeout)
+        elapsed = time.monotonic() - started
+        log_stage(stage, f"done: {detail} ({elapsed:.1f}s)")
+        return result
+    except asyncio.TimeoutError as exc:
+        elapsed = time.monotonic() - started
+        message = f"{stage} timeout after {elapsed:.1f}s: {detail}"
+        log_stage(stage, message)
+        raise TimeoutError(message) from exc
+    except Exception as exc:
+        elapsed = time.monotonic() - started
+        log_stage(stage, f"error after {elapsed:.1f}s: {detail} -> {exc}")
+        raise
 
 
 def normalize_artifact_type(name: str) -> str:
@@ -171,34 +199,41 @@ async def get_or_create_notebook(
     language: str = "zh_Hans",
     existing_notebook_id: str | None = None,
 ) -> str | None:
-    notebooks = await client.notebooks.list()
+    notebooks = await run_with_timeout("notebooks", "list notebooks", client.notebooks.list(), RPC_TIMEOUT)
 
     if existing_notebook_id:
         for nb in notebooks:
             if nb.id == existing_notebook_id:
+                log_stage("notebooks", f"reuse existing notebook: {nb.id}")
                 return nb.id
 
     for nb in notebooks:
         title = nb.title or ""
         if title == channel_name or title == f"📺 {channel_name}" or channel_name in title:
+            log_stage("notebooks", f"reuse matched notebook: {nb.id}")
             return nb.id
 
-    nb = await client.notebooks.create(f"📺 {channel_name}")
+    nb = await run_with_timeout("notebooks", f"create notebook: {channel_name}", client.notebooks.create(f"📺 {channel_name}"), RPC_TIMEOUT)
     try:
-        await client.settings.set_language(nb.id, language)
+        await run_with_timeout("settings", f"set language {language} for {nb.id}", client.settings.set_language(nb.id, language), RPC_TIMEOUT)
     except Exception:
         pass
     return nb.id
 
 
 async def add_source(client: NotebookLMClient, notebook_id: str, url: str):
-    source = await client.sources.add_url(notebook_id, url)
-    return await client.sources.wait_until_ready(notebook_id, source.id)
+    source = await run_with_timeout("sources", f"add_url to {notebook_id}: {url}", client.sources.add_url(notebook_id, url), RPC_TIMEOUT)
+    return await run_with_timeout(
+        "sources",
+        f"wait_until_ready source={source.id}",
+        client.sources.wait_until_ready(notebook_id, source.id, timeout=SOURCE_READY_TIMEOUT),
+        SOURCE_READY_TIMEOUT + 10,
+    )
 
 
 async def delete_notebook(client: NotebookLMClient, notebook_id: str) -> bool:
     try:
-        return await client.notebooks.delete(notebook_id)
+        return await run_with_timeout("notebooks", f"delete notebook: {notebook_id}", client.notebooks.delete(notebook_id), DELETE_TIMEOUT)
     except Exception:
         return False
 
@@ -229,16 +264,26 @@ async def generate_artifact(
         return result
 
     try:
-        generation = await spec["generate"](client, notebook_id, source_ids, language, title)
+        generation = await run_with_timeout(
+            "artifacts",
+            f"generate {normalized} for notebook={notebook_id}",
+            spec["generate"](client, notebook_id, source_ids, language, title),
+            RPC_TIMEOUT,
+        )
         task_id = getattr(generation, "task_id", None)
         result["task_id"] = task_id
 
         if wait and not spec.get("synchronous"):
-            final = await client.artifacts.wait_for_completion(
-                notebook_id,
-                task_id,
-                timeout=spec["wait_timeout"],
-                initial_interval=5,
+            final = await run_with_timeout(
+                "artifacts",
+                f"wait_for_completion {normalized} task={task_id}",
+                client.artifacts.wait_for_completion(
+                    notebook_id,
+                    task_id,
+                    timeout=spec["wait_timeout"],
+                    initial_interval=5,
+                ),
+                spec["wait_timeout"] + 15,
             )
             if not final.is_complete:
                 result["error"] = f"generation not complete: {final.status}"
@@ -250,7 +295,12 @@ async def generate_artifact(
 
         output_dir.mkdir(parents=True, exist_ok=True)
         output_path = output_dir / f"{normalized}.{spec['ext']}"
-        downloaded_path = await spec["download"](client, notebook_id, task_id, output_path)
+        downloaded_path = await run_with_timeout(
+            "artifacts",
+            f"download {normalized} to {output_path.name}",
+            spec["download"](client, notebook_id, task_id, output_path),
+            RPC_TIMEOUT,
+        )
         result["status"] = "ok"
         result["path"] = str(downloaded_path)
         return result
